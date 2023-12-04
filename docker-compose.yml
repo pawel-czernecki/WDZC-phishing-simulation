@@ -1,0 +1,38 @@
+version: '1'
+
+services:
+  gophish:
+    image: gophish/gophish:latest
+    container_name: gophish
+    ports:
+      - "8001:3333"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - gophishdata:/opt/gophishWW
+    environment:
+      - GOPHISH_DB_HOST=postgres
+      - GOPHISH_DB_PORT=5432
+      - GOPHISH_DB_NAME=gophish
+      - GOPHISH_DB_USER=gophish
+      - GOPHISH_DB_PASS=password
+      - GOPHISH_LISTEN_URL=https://localhost:3333/
+      - GOPHISH_SMTP_HOST=mailhog
+      - GOPHISH_SMTP_PORT=1025
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - "8002:8025"
+      - "1025:1025"
+  apache:
+    image: httpd:latest
+    container_name: apache
+    ports:
+      - "8003:80"
+    volumes:
+      - /mnt/host/d/Projekty/WDZC-phishing-simulation/phishingpages:/usr/local/apache2/htdocs:ro
+    restart: always
+
+volumes:
+    gophishdata:
